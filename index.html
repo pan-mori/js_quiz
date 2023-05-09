@@ -1,27 +1,35 @@
 <!DOCTYPE html>
 <html lang="cs">
   <head>
+    <!-- Načítání fontů z Google Fonts -->
     <link rel="preconnect" href="https://fonts.googleapis.com" />
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link
       href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital@1&display=swap"
       rel="stylesheet"
     />
+    <!-- Připojení externího CSS souboru -->
     <link rel="stylesheet" href="style.css" />
+    <!-- Nastavení kódování a titulku -->
     <meta charset="UTF-8" />
     <title>Quiz</title>
+    <!-- Načítání jQuery z CDN -->
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
   </head>
   <body>
     <article>
+      <!-- Kontejner pro otázky -->
       <div id="question-container"></div>
+      <!-- Tlačítko pro vyhodnocení -->
       <button id="evaluate">Vyhodnotit</button>
     </article>
 
     <script>
       var questionsData;
+      // Načítání dat z JSON souboru
       getJson();
 
+      // Funkce pro načítání JSON souboru s otázkami a odpověďmi
       async function getJson() {
         try {
           const response = await fetch("data.json");
@@ -33,23 +41,26 @@
         }
       }
 
-      const correctAnswerId = "answer2";
-
+      // Zobrazování otázek a odpovědí
       function displayQuestions(questionsData) {
         const questionContainer = document.getElementById("question-container");
         questionsData.questions.forEach((question, questionIndex) => {
+          // Vytvoření kontejneru pro otázku
           const questionElement = document.createElement("div");
           questionElement.classList.add("question");
+          // Vložení textu otázky
           questionElement.innerHTML = `<h1>${question.header}</h1>`;
           questionElement.innerHTML += `<p>${question.text}</p>`;
           questionElement.innerHTML += `<h3>${question.answer_headers}</h3>`;
-
+          // Přidání otázky do kontejneru
           questionContainer.appendChild(questionElement);
 
+          // Přidání odpovědí k otázkám
           question.answer.forEach((answer, answerIndex) => {
             const answerLabel = document.createElement("label");
             answerLabel.className = "answer";
             var answer_index_add = answerIndex + 1;
+            // Vložení odpovědi jako rádiového tlačítka
             answerLabel.innerHTML = `
                         <input type="radio" name="question${questionIndex}" value="${answer_index_add}">
                         ${answer}
@@ -59,25 +70,31 @@
         });
       }
 
+      // Funkce pro vyhodnocení odpovědí
       function evaluateAnswers() {
+        // Získání správných odpovědí
         const correctAnswers = questionsData.questions.map(
           (question) => question.correct
         );
-
+        // Kontrola zda je vybraná odpověď správná nebo špatná
         questionsData.questions.forEach((question, questionIndex) => {
           const radioButtons = document.getElementsByName(
             `question${questionIndex}`
           );
+          // Získání vybraného rádiového tlačítka
           const selectedRadioButton = getSelectedRadioButton(radioButtons);
 
           if (selectedRadioButton !== null) {
             const selectedAnswerIndex = parseInt(selectedRadioButton.value);
+            // Přidání třídy "correct", pokud je odpověď správná
             if (selectedAnswerIndex === correctAnswers[questionIndex]) {
               selectedRadioButton.parentNode.classList.add("correct");
             }
           }
         });
       }
+
+      // Funkce pro získání vybraného rádiového tlačítka
       function getSelectedRadioButton(radioButtons) {
         for (let i = 0; i < radioButtons.length; i++) {
           if (radioButtons[i].checked) {
@@ -87,10 +104,12 @@
         return null;
       }
 
+      // Přidání eventu pro tlačítko "Vyhodnotit"
       document
         .getElementById("evaluate")
         .addEventListener("click", evaluateAnswers);
 
+      // Přidání eventu událostí pro zvýraznění správných a špatných odpovědí
       document
         .getElementById("evaluate")
         .addEventListener("click", function () {
@@ -98,9 +117,11 @@
           for (let i = 0; i < radioButtons.length; i++) {
             if (radioButtons[i].checked) {
               const selectedAnswer = radioButtons[i].parentNode;
+              // Přidání třídy "good", pokud je odpověď správná
               if (radioButtons[i].value === correctAnswerId) {
                 selectedAnswer.classList.add("good");
               }
+              // Přidání třídy "bad", pokud je odpověď špatná
               if (radioButtons[i].value != correctAnswerId) {
                 selectedAnswer.classList.add("bad");
                 correctAnswerId.classList.add("good");

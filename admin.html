@@ -1,9 +1,11 @@
 <!DOCTYPE html>
 <html lang="cs">
   <head>
+    <!-- Definice metadat a titulku dokumentu -->
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>JSON Administrace</title>
+    <!-- Připojení externích CSS a JavaScript souborů -->
     <link rel="stylesheet" href="style.css" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
     <link
@@ -12,6 +14,7 @@
     />
     <script>
       // from json set value
+      // Načtení JSON dat a zobrazení otázek
       var questionsData;
       async function getJson() {
         try {
@@ -39,9 +42,9 @@
 
     <script>
       // auto resize textarea
+      // Automatické přizpůsobení velikosti textarea
       $(document).ready(function () {
         const textarea_size = document.querySelectorAll(".autoresizing");
-
         textarea_size.forEach((textarea) => {
           textarea.addEventListener("input", autoResize, false);
           autoResize();
@@ -59,7 +62,7 @@
 
     <script>
       // json update and download
-
+      // Aktualizace JSON dat a stažení souboru
       function updateJSON() {
         var update_json;
         let currentQuestionIndex = 0;
@@ -90,24 +93,26 @@
 
   <body>
     <article>
+      <!-- Nadpis a formulář pro editaci otázek -->
       <h1>JSON Administrace</h1>
-
+      <!-- Vstupy pro editaci otázek -->
       <label for="header-input"><h1>Nadpis</h1></label>
       <input type="text" id="header-input" value="nadpis otazky není nutný" />
+      <!-- Vstupy pro editaci odpovědí -->
       <br />
       <label for="text-input"><h3>Text otazky:</h3></label>
       <textarea class="autoresizing" id="text-input">text otazky?</textarea>
-
       <br />
       <label for="answer-headers-input"><h3>Answer headers:</h3></label>
       <input type="text" id="answer-headers-input" value="otazky " />
       <br />
       <label for="answer-input">Answer:</label>
       <textarea class="autoresizing" id="answer-input"> </textarea>
-
+      <!-- Vstup pro správnou odpověď -->
       <br />
       <label for="correct-input">Correct:</label>
       <input type="number" id="correct-input" value="4" />
+      <!-- Tlačítko pro stažení upraveného JSON souboru -->
       <br /><br />
       <button onclick="downloadJSON()">Stáhnout data.json</button>
 
