@@ -80,7 +80,7 @@
         updateJSON();
         let dataStr =
           "data:text/json;charset=utf-8," +
-          encodeURIComponent(JSON.stringify(data, null, 2));
+          encodeURIComponent(JSON.stringify(questionsData, null, 2));
         let downloadAnchorNode = document.createElement("a");
         downloadAnchorNode.setAttribute("href", dataStr);
         downloadAnchorNode.setAttribute("download", "data.json");
@@ -114,10 +114,34 @@
       <input type="number" id="correct-input" value="4" />
       <!-- Tlačítko pro stažení upraveného JSON souboru -->
       <br /><br />
-      <button onclick="downloadJSON()">Stáhnout data.json</button>
+      <button class="btn_green" onclick="downloadJSON()">
+        Stáhnout data.json
+      </button>
 
       <div id="question-container"></div>
-      <button id="evaluate">kdybych měla PHP tak to přepíšu</button>
+      <button class="btn_green" onclick="saveJSONToServer()" id="btn_save_json">
+        přepsat soubor na serveru
+      </button>
     </article>
   </body>
 </html>
+<script>
+  // Přidání funkce pro odeslání JSON dat na server
+  function saveJSONToServer() {
+    updateJSON();
+    console.log(questionsData);
+    $.ajax({
+      url: "save_json.php",
+      method: "POST",
+      data: { jsonData: JSON.stringify(questionsData) },
+      success: function (response) {
+        alert("Data úspěšně uložena na server.");
+      },
+      error: function (jqXHR, textStatus, errorThrown) {
+        alert("Nepodařilo se uložit data na server: " + textStatus);
+      },
+    });
+  }
+
+  // Nastavení události pro tlačítko 'evaluate'
+</script>
