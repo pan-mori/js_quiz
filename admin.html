@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html lang="cs">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>JSON Administrace</title>
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.6.4/jquery.min.js"></script>
+    <link
+      href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital@1&display=swap"
+      rel="stylesheet"
+    />
+    <script>
+      // from json set value
+      var questionsData;
+      async function getJson() {
+        try {
+          const response = await fetch("data.json");
+          const data = await response.json();
+          questionsData = data;
+          displayQuestions(questionsData);
+        } catch (error) {
+          console.error("Chyba při načítání dat:", error);
+        }
+      }
+
+      function displayQuestions(questionsData) {
+        questionsData.questions.forEach((question, questionIndex) => {
+          $("#header-input").val(question.header);
+          $("#text-input").val(question.text);
+          $("#answer-headers-input").val(question.answer_headers);
+          $("#answer-input").val(question.answer.join("\n"));
+          $("#correct-input").val(question.correct);
+          autoResize();
+        });
+      }
+      getJson();
+    </script>
+
+    <script>
+      // auto resize textarea
+      $(document).ready(function () {
+        const textarea_size = document.querySelectorAll(".autoresizing");
+
+        textarea_size.forEach((textarea) => {
+          textarea.addEventListener("input", autoResize, false);
+          autoResize();
+        });
+      });
+
+      function autoResize() {
+        bar_1 = document.querySelectorAll(".autoresizing");
+        bar_1.forEach((textarea) => {
+          textarea.style.height = "auto";
+          textarea.style.height = textarea.scrollHeight + "px";
+        });
+      }
+    </script>
+
+    <script>
+      // json update and download
+
+      function updateJSON() {
+        var update_json;
+        let currentQuestionIndex = 0;
+        let question_update = {
+          header: document.getElementById("header-input").value,
+          text: document.getElementById("text-input").value,
+          answer_headers: document.getElementById("answer-headers-input").value,
+          answer: document.getElementById("answer-input").value.split("\n"),
+          correct: parseInt(document.getElementById("correct-input").value),
+        };
+        questionsData.questions[currentQuestionIndex] = question_update;
+      }
+
+      function downloadJSON() {
+        updateJSON();
+        let dataStr =
+          "data:text/json;charset=utf-8," +
+          encodeURIComponent(JSON.stringify(data, null, 2));
+        let downloadAnchorNode = document.createElement("a");
+        downloadAnchorNode.setAttribute("href", dataStr);
+        downloadAnchorNode.setAttribute("download", "data.json");
+        document.body.appendChild(downloadAnchorNode);
+        downloadAnchorNode.click();
+        downloadAnchorNode.remove();
+      }
+    </script>
+  </head>
+
+  <body>
+    <article>
+      <h1>JSON Administrace</h1>
+
+      <label for="header-input"><h1>Nadpis</h1></label>
+      <input type="text" id="header-input" value="nadpis otazky není nutný" />
+      <br />
+      <label for="text-input"><h3>Text otazky:</h3></label>
+      <textarea class="autoresizing" id="text-input">text otazky?</textarea>
+
+      <br />
+      <label for="answer-headers-input"><h3>Answer headers:</h3></label>
+      <input type="text" id="answer-headers-input" value="otazky " />
+      <br />
+      <label for="answer-input">Answer:</label>
+      <textarea class="autoresizing" id="answer-input"> </textarea>
+
+      <br />
+      <label for="correct-input">Correct:</label>
+      <input type="number" id="correct-input" value="4" />
+      <br /><br />
+      <button onclick="downloadJSON()">Stáhnout data.json</button>
+
+      <div id="question-container"></div>
+      <button id="evaluate">kdybych měla PHP tak to přepíšu</button>
+    </article>
+  </body>
+</html>
